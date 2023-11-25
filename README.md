@@ -3,7 +3,7 @@
 - **Atualização 2.0:** Correção de bugs, novas funções, funções aprimoradas, novos itens adicionados.  
 
 - **Como funciona?**  
-O projeto funciona como um programa para organizar sua lista de compras em uma loja de chocolates. Os itens comprados podem ser chocolate (um chocolate de determinado peso em gramas), ovo (um tipo especial de chocolate, vendido exclusivamente na época de Páscoa, de determinado peso em gramas e determinado diâmetro em centímetros), trufa, caixa de bombons, biscoito e wafer (outros pedidos de determinada quantidade). Os preços são tabelados. O programa lê do usuário uma sequência de itens (terminada em F),e imprime o número total de itens lidos, o preço individual de cada um, o peso total dos itens lidos e o valor total dos mesmos, nesta ordem.  
+O projeto funciona como um programa para organizar sua lista de compras em uma loja de chocolates. Os itens comprados podem ser chocolate (um chocolate de determinado peso em gramas), ovo (um tipo especial de chocolate, vendido exclusivamente na época de Páscoa, de determinado peso em gramas e determinado diâmetro em centímetros), trufa, caixa de bombons, biscoito e wafer (outros pedidos de determinada quantidade). Os preços são tabelados. O programa lê do usuário uma sequência de itens (terminada em F),e imprime a data e a hora do pedido, o número total de itens lidos, o preço individual de cada um, o peso total dos itens lidos e o valor total dos mesmos, nesta ordem, e salva em um arquivo de texto. 
 
 - **Como executar:**  
 Baixe o arquivo em zip, extraia, entre na pasta \bin\Debug e abra o arquivo executável ProjetoLojadeChocolates.  
