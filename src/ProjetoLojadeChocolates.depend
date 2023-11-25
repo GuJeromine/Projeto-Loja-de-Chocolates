@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1700667410 source:c:\users\gusta\onedrive\Área de trabalho\faculdade\2023-2\engenharia de software\projeto\projetolojadechocolates\main.cpp
+	<iostream>
+	<vector>
+	<string>
+	<iomanip>
+	<cmath>
+	<fstream>
+	<ctime>
+
