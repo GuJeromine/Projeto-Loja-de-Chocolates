@@ -1,6 +1,6 @@
-/* Código para uma loja de chocolates
+/* Código para pedidos em uma loja de chocolates
 
-Descrição: O programa pode servir como uma método para que o cliente crie uma lista de compras digitando o nome dos produtos e no final retirar os produtos escolhidos,
+Descrição: O programa pode servir como um método para que o cliente crie uma lista de compras digitando o nome dos produtos e no final retirar os produtos escolhidos,
 os pedidos são armazenados em um arquivo de texto como um histórico de pedidos.
 
 Feito por: Gustavo Allan Jeromine
@@ -9,85 +9,10 @@ Feito por: Gustavo Allan Jeromine
 #include <iostream>
 #include <vector>
 #include <string>
-#include <iomanip>
-#include <cmath>
 #include <fstream>
-#include <ctime>
+#include "lojadechocolates.hpp"
 
 using namespace std;
-
-// descobrir qual sistema o usuário está utilizando para limpar o terminal corretamente
-#ifdef _WIN32
-    const string CLEAR_COMMAND = "cls";
-#else
-    const string CLEAR_COMMAND = "clear";
-#endif
-
-class chocolate // classe inicial da loja
-{
-public:
-    virtual double preco(double p, double d, int quantidade) // virtual por ser uma funcao virtual que será substituida em classes dervidas, p preco, d diametro e q quantidade
-    {
-        double valor;
-        valor = (0.20 * p);
-        return valor;
-    }
-};
-
-class ovo : public chocolate // classe ovo de pascoa herdando da classe chocolate
-{
-public:
-    double preco(double p, double d, int quantidade) // p preco, d diametro e q quantidade
-    {
-        double valor;
-        valor = (0.20 * p + 0.40 * d);
-        return valor;
-    }
-};
-
-class trufa : public chocolate // classe trufa herdando da classe chocolate
-{
-public:
-    double preco(double p, double d, int quantidade) // p preco, d diametro e q quantidade
-    {
-        double valor;
-        valor = (3.90 * quantidade);
-        return valor;
-    }
-};
-
-class caixaDeBombons : public chocolate // classe caixa de bombons herdando da classe chocolate
-{
-public:
-    double preco(double p, double d, int quantidade) // p preco, d diametro e q quantidade
-    {
-        double valor;
-        valor = (14.79 * quantidade);
-        return valor;
-    }
-};
-
-class biscoito : public chocolate // classe biscoito herdando da classe chocolate
-{
-public:
-    double preco(double p, double d, int quantidade) // p preco, d diametro e q quantidade
-    {
-        double valor;
-        valor = (3.57 * quantidade);
-        return valor;
-    }
-};
-
-class wafer : public chocolate // classe wafer herdando da classe chocolate
-{
-public:
-    double preco(double p, double d, int quantidade) // p preco, d diametro e q quantidade
-    {
-        double valor;
-        valor = (4.26 * quantidade);
-        return valor;
-    }
-};
 
 void mostrarInstrucoesTabelaPrecos() // apenas uma funcao de instrucoes e tabela de precos
 {
@@ -104,13 +29,6 @@ void mostrarInstrucoesTabelaPrecos() // apenas uma funcao de instrucoes e tabela
     cout << endl << "Escolha o produto da seguinte forma: chocolate, ovo, trufa, caixa, biscoito, wafer." << endl;
 }
 
-string hora() // função para obter a data e a hora em que o pedido foi feito
-{
-    time_t tempo;
-    time (&tempo);
-    return ctime(&tempo);
-}
-
 int main()
 {
     vector<chocolate *> v; // vetor da classe chocolate
@@ -123,7 +41,6 @@ int main()
     double peso, diametro; // peso (utilizado somente em chocolates) e diametro (utilizado somente em ovos de pascoa)
     double pesototal=0; // peso total iniciado em 0 para soma
     double valortotal=0; // valor total iniciado em 0 para soma
-    double preco; // preco é a variavel que recebe o valor da funcao preco de cada classe
     bool continuarComprando = true; // continuarcomprando variavel comeca em true, serve para saber se o usuario quer criar um novo pedido
 
     ofstream arquivo("historico_de_pedidos.txt", ios::app);  // abre o arquivo em modo append para nao limpar o arquivo
@@ -140,23 +57,23 @@ int main()
         mostrarInstrucoesTabelaPrecos(); // mostra todas instrucoes e tabela de precos
 
         cin >> s; // usuario digita o item que deseja
-        while (s != "F")
+        while (s != "F") // enquanto o usuario nao digita F
         {
             chocolate *a; // cria um ponteiro da classe chocolate
             if (s == "chocolate")
             {
                 cin >> peso; // digita o peso do chocolate
                 a = new chocolate();  // cria um objeto da classe chocolate e atribui o endereço desse objeto à variável de ponteiro a
-                item.push_back("Chocolate");
+                item.push_back("Chocolate"); // coloca o nome do item no final do vetor item para imprimir o nome da cada item no final
             }
             else if (s == "ovo")
             {
                 cin >> peso; // digita o peso do ovo de pascoa
-                int D = cbrt((6*peso)/3.14); // fórmula para obter o diametro minimo do ovo de Páscoa
+                double D = calcDiametro(peso); // chama a funcao de calcular diametro e coloca o resultado na variavel D
                 cin >> diametro; // digita o diametro do ovo de pascoa
                 while(diametro < D) // se o diametro for menor que o calculado
                 {
-                    cout << "Por favor digite um valor maior de diametro." << endl; // imprime uma mensagem
+                    cout << "Por favor digite um valor maior de diametro. Deve ser maior que " << D << endl; // imprime uma mensagem
                     cin >> diametro; // le o diametro novamente
                 }
                 a = new ovo(); // cria um objeto da classe ovo e atribui o endereço desse objeto à variável de ponteiro a
@@ -202,32 +119,17 @@ int main()
             cin >> s; // usuario digita mais itens para o pedido
         }
 
-        cout << hora(); // imprime a data e a hora em que o pedido foi feito
-        arquivo << hora(); // escreve no arquivo a data e a hora em que o pedido foi feito
-        cout << "Total: " << v.size() << " itens." << endl; // imprime a quantidade total de itens
-        arquivo << "Total: " << v.size() << " itens." << endl; // escreve a quantidade total de itens no arquivo
-        for (int i=0; i<(int)v.size(); i++)
-        {
-            preco = v[i]->preco(p[i],d[i],quantidade[i]); // calcula o preco em cada classe e insere na variavel preco
-            cout << item[i] << ": R$ " << fixed << setprecision(2) << preco << endl; // imprime o item
-            arquivo << item[i] << ": R$ " << fixed << setprecision(2) << preco << endl; // escreve o item no arquivo
-            pesototal = pesototal + p[i]; // calcula o peso total
-            valortotal = valortotal + preco; // calcula o valor total
-        }
-        cout << "Peso total de chocolates (barra ou ovo): " << fixed << setprecision(0) << pesototal << "g" << endl; // imprime o peso total em gramas
-        arquivo << "Peso total de chocolates (barra ou ovo): " << fixed << setprecision(0) << pesototal << "g" << endl; // escreve o peso total em gramas no arquivo
-        cout << "Valor total: R$ " << fixed << setprecision(2) << valortotal << endl; // imprime o valor total
-        arquivo << "Valor total: R$ " << fixed << setprecision(2) << valortotal << endl; // escreve o valor total no arquivo
+        imprimirDetalhesPedido(v, item, p, d, quantidade, pesototal, valortotal, arquivo); // Imprime os detalhes finais do pedido
 
         cout << "Deseja criar outra lista de compras? (S/N): ";
         char resposta; // cria a variavel resposta em caractere
         cin >> resposta; // recebe a resposta em S/s ou N/n
 
-         if (resposta != 'S' && resposta != 's') // se a resposta for diferente de sim
+         if (resposta != 'S' && resposta != 's') // se a resposta for nao
         {
             continuarComprando = false; // define a variavel continuarcomprando como false e sai do loop
         }
-        else // se nao
+        else // se sim
         {
             // limpa os vetores
             v.clear();
@@ -238,10 +140,12 @@ int main()
             pesototal = 0;
             valortotal = 0;
         }
-        cout << endl; // pula linha para ficar mais organizado
-        arquivo << endl; // pula linha no arquivo para ficar mais organizado
     }
 
+    for (int i = 0; i < v.size(); ++i) // desalocando a memória dos objetos
+    {
+        delete v[i];
+    }
     arquivo.close(); // fecha o arquivo
     return 0;
 }
